@@ -10,13 +10,14 @@ services:
     ports:
       - "${MONGODB_PORT}:27017"
     volumes:
-      - ./database/db:/data/db
-      - ./database/dev.archive:/Databases/dev.archive
-      - ./database/production:/Databases/production
+      - db_data:/data/db
+      - db_archive:/Databases/dev.archive
+      - db_production:/Databases/production
   mongo-express:
     image: mongo-express
     container_name: "${DB_NAME}_express"
     environment:
+      - "ME_CONFIG_MONGODB_ENABLE_ADMIN=true"
       - "ME_CONFIG_MONGODB_ADMINUSERNAME=${DB_USER_NAME}"
       - "ME_CONFIG_MONGODB_ADMINPASSWORD=${DB_USER_PASSWORD}"
       - "ME_CONFIG_MONGODB_URL=mongodb://${DB_USER_NAME}:${DB_USER_PASSWORD}@mongo:27017/?authSource=admin"
@@ -27,3 +28,7 @@ services:
     restart: unless-stopped
     ports:
       - "${MONGOEXPRESS_PORT}:8081"
+volumes:
+  db_data:
+  db_archive:
+  db_production:
